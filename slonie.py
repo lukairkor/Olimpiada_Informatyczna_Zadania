@@ -6,30 +6,30 @@ Created on Sat May 22 00:48:15 2021
 @author: lukas
 """
 import re 
+import itertools
+lines = []  
+with open('zadanie_B/slo1.in', 'r') as f:
+    for line in f:
+        line = line.strip()
+        line = re.sub("\s+", ", ", line.strip())
+        line =[int(x) for x in line.split(',')]
+        lines.append(line)
 
-# lines = []  
-# with open('zadanie_B/slo1.in', 'r') as f:
-#     for line in f:
-#         line = line.strip()
-#         line = re.sub("\s+", ", ", line.strip())
-#         line =[int(x) for x in line.split(',')]
-#         lines.append(line)
 
-
-# licz_sloni = int(lines[0][0])
-# mas_slon = lines[1]
-# kol_startowa = lines[2]
-# kol_docelowa = [[x] for x in lines[3]]
+licz_sloni = int(lines[0][0])
+mas_slon = lines[1]
+kol_startowa = lines[2]
+kol_docelowa = [[x] for x in lines[3]]
 
 # print(licz_sloni)
 # print(mas_slon)
 # print(kol_startowa)
 # print(kol_docelowa)
 
-licz_sloni = 6
-mas_slon = [2400, 2000, 1200, 2400, 1600, 4000]
-kol_startowa = [1, 4, 5, 3, 6, 2]
-kol_docelowa = [[5], [3], [2], [4], [6], [1]]
+# licz_sloni = 6
+# mas_slon = [2400, 2000, 1200, 2400, 1600, 4000]
+# kol_startowa = [1, 4, 5, 3, 6, 2]
+# kol_docelowa = [[5], [3], [2], [4], [6], [1]]
 
 masa_sloni = dict(zip(kol_startowa, mas_slon))
 graph = dict(zip(kol_startowa, kol_docelowa))
@@ -39,27 +39,40 @@ my_cycles = []
 
 
 #
-def dfs(visited, graph, node, p):
-    if node not in visited:
-        # print(node)
-        p.append(node)
-        visited.add(node)
-        for neighbour in graph[node]:
-            dfs(visited, graph, neighbour, p)
+def dfs_it(graph, start_node, end_node, p):
+    print(p)
+    frontier = []
+    frontier.append(start_node)
+    explored = set()  
+    while frontier:
+        current_node = frontier.pop()
+        if current_node in explored: continue
+        if current_node == end_node: 
+            if end_node not in p:
+                p.append(end_node) 
+                    
+        for neighbor in graph[current_node]:
+            frontier.append(neighbor)        
+            explored.add(current_node) 
     return p
 
 
-for i in range(1, licz_sloni + 1):  
-    p = []      
-    x = dfs(visited, graph, i, p)
-    # x = dfs_it(graph, i)
-    my_cycles.append(x)
-    # print(x)
+def aaa(j):
+    p = []
+    for i in range(1, licz_sloni + 1):
+        # print(my_cycles)
+        # for j in range(1, licz_sloni + 1):
+        cycl = dfs_it(graph, j, i, p)
+        my_cycles.append(cycl)
+        
+for i in range(1, 7):
+    aaa(i)
 
-my_cycles = [x for x in my_cycles if x]
+    
+my_cycles.sort()
+my_cycles = list(k for k,_ in itertools.groupby(my_cycles))
+
 print("\nCycles: \n", my_cycles)
-
-
 # wyznaczanie param cykli
 def wyzn_para_cykl():
     calkowi_masa_cyklu = {}
@@ -141,8 +154,9 @@ def oblicz_wyniku():
     print("Metoda1: ", metoda1)
     print("Metoda2: ", metoda2)
     
+    my_cycles_len = len(my_cycles)
     liss = []
-    for i in range(3):
+    for i in range(my_cycles_len):
         met1 = metoda1[i]
         met2 = metoda2[i]
         max_ = max(met1, met2)
@@ -167,8 +181,8 @@ def oblicz_wyniku():
     # 11200
         
 # print(sumaC)        
-# wyzn_para_cykl()
-# oblicz_wyniku()
+wyzn_para_cykl()
+oblicz_wyniku()
 
 
 
