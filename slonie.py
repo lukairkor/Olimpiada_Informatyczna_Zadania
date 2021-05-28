@@ -13,7 +13,7 @@ import time
 # importuje dane z plikow i zmienia ich format
 def import_date():
     lines = []  
-    with open('zadanie_B/slo0.in', 'r') as f:
+    with open('zadanie_B/slo1.in', 'r') as f:
         for line in f:
             line = line.strip()
             line = re.sub("\s+", ", ", line.strip())
@@ -114,12 +114,13 @@ def wyzn_para_cykl(cykle_proste, masa_sloni, kol_startowa):
     print("Suma mas w cyklach:", mass_in_cycles)
     print("Najlzejszy slon w cyklu:", min_by_cycle)
     print("----------------------------------------------------\n")
-        
+    
+    # print(sum(mass_in_cycles))
     return mass_in_cycles, min_by_cycle, min_mass_global
 
      
 # count  finall reuslt
-def oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste):   
+def oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste, my_cycles):   
     
     w = []
     for i, elem in enumerate(cykle_proste, start = 0):        
@@ -137,9 +138,10 @@ def oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste):
         metoda2 = cmc + mmwc + (dl_cyc + 1) * min_mass_global
 
         print("Metoda1 w cyklu: ", metoda1)
-        print("Metoda2 w cyklu: ", metoda2, "\n")
+        print("Metoda2 w cyklu: ", metoda2)
        
         licz3 = min(metoda1, metoda2)
+        print("licz3: ", licz3, "\n")
         w.append(licz3)
 
     wynik = sum(w)
@@ -156,12 +158,12 @@ if __name__ == "__main__":
     licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()   
     
     my_cycles = get_cycles()
-    print("my_cycles: ", my_cycles)
+    # print("my_cycles: ", my_cycles)
     cykle_proste = rozklad_na_cykle_proste(my_cycles, masa_sloni)
     
     mass_in_cycles, min_by_cycle, min_mass_global = wyzn_para_cykl(cykle_proste, masa_sloni, kol_startowa)
     
-    oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste)
+    oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste, my_cycles)
        
     end = time.time() # end time   
     print(f"Runtime of the program is {end - start}") # total time taken
