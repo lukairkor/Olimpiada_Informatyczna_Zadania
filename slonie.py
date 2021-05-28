@@ -13,7 +13,7 @@ import time
 # importuje dane z plikow i zmienia ich format
 def import_date():
     lines = []  
-    with open('zadanie_B/slo1.in', 'r') as f:
+    with open('zadanie_B/slo0.in', 'r') as f:
         for line in f:
             line = line.strip()
             line = re.sub("\s+", ", ", line.strip())
@@ -36,43 +36,38 @@ def import_date():
     return licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph
     
 
-# DFS graph traversing
-def dfs_it(graph, start_node, end_node, p):
-    # print(p)
-    frontier = []
-    frontier.append(start_node)
-    explored = set()  
-    while frontier:
-        current_node = frontier.pop()
-        if current_node in explored: continue
-        if current_node == end_node: 
-            if end_node not in p:
-                p.append(end_node) 
-                    
-        for neighbor in graph[current_node]:
-            frontier.append(neighbor)        
-            explored.add(current_node) 
-    return p
+# DFS graph traversing iterational
+def dfs(graph, start_vertex):
+    visited = set()
+    traversal = []
+    stack = [start_vertex]
+    while stack:
+        vertex = stack.pop()
+        if vertex not in visited:
+            visited.add(vertex)
+            traversal.append(vertex)
+            stack.extend(reversed(graph[vertex]))   # add vertex in the same order as visited
+    return traversal
 
 
+def getList(graph):
+    list = []
+    for key in graph.keys():
+        list.append(key)
+          
+    return list
+      
+
 #
-def Creat_cycles_part1(j):
-    p = []
-    for i in range(1, licz_sloni + 1):
-        # print(my_cycles)
-        # for j in range(1, licz_sloni + 1):
-        cycl = dfs_it(graph, j, i, p)
-        my_cycles.append(cycl)
-        
-        
-#
-def Creat_cycles_part2(Creat_cycles_part1, my_cycles):  
-    for i in range(1, licz_sloni + 1):
-        Creat_cycles_part1(i)
-       
-    my_cycles.sort()
-    my_cycles = list(k for k,_ in itertools.groupby(my_cycles))
-    print("\nCycles: \n", my_cycles)
+def get_cycles():
+    my_cycles = []
+    xx = getList(graph)
+    for i, elem in enumerate(xx, start = 1):
+        x_flat = [val for sublist in my_cycles for val in sublist]
+        if elem not in x_flat:
+            my_cycles.append(dfs(graph, elem))    
+
+    # print(my_cycles)
     return my_cycles
 
 
@@ -149,10 +144,10 @@ def oblicz_wyniku():
 if __name__ == "__main__":      
     start = time.time() # starting time
     
-    my_cycles = []
+    # my_cycles = []
 
     licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()    
-    my_cycles = Creat_cycles_part2(Creat_cycles_part1, my_cycles)
+    my_cycles = get_cycles()
     # print(sumaC)        
     wyzn_para_cykl()
     oblicz_wyniku()
