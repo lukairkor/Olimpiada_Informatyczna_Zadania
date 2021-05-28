@@ -13,7 +13,7 @@ import time
 # importuje dane z plikow i zmienia ich format
 def import_date():
     lines = []  
-    with open('zadanie_B/slo1.in', 'r') as f:
+    with open('zadanie_B/slo0.in', 'r') as f:
         for line in f:
             line = line.strip()
             line = re.sub("\s+", ", ", line.strip())
@@ -56,7 +56,7 @@ def dfs_it(graph, start_node, end_node, p):
 
 
 #
-def Creat_cycles_part1(j):
+def creat_cycles_part1(j):
     p = []
     for i in range(1, licz_sloni + 1):
         # print(my_cycles)
@@ -66,7 +66,7 @@ def Creat_cycles_part1(j):
         
         
 #
-def Creat_cycles_part2(Creat_cycles_part1, my_cycles):  
+def creat_cycles_part2(Creat_cycles_part1, my_cycles):  
     for i in range(1, licz_sloni + 1):
         Creat_cycles_part1(i)
        
@@ -123,14 +123,15 @@ def oblicz_wyniku():
         print("Numer cyklu: ", i)
         cmc = calkowi_masa_cyklu[i]
         mmwc = min_masa_w_cyklu[i]
-        dlugos_cyckl = len(elem)
+        dl_cyc = len(elem)
         
-        print("Dlugos_cyckl: ", dlugos_cyckl)
+        print("Dlugos_cyckl: ", dl_cyc)
         print("Calk_masa_cykl: ", cmc)
-        print("Min masa w cyklu ", mmwc)    
-        
-        metoda1 = cmc + (abs(dlugos_cyckl)  - 2) * mmwc
-        metoda2 = cmc + mmwc + (abs(dlugos_cyckl) + 1) * min_
+        print("Min masa w cyklu: ", mmwc)
+        print("Globalne minimum: ", min_)  
+                
+        metoda1 = cmc + (dl_cyc  - 2) * mmwc
+        metoda2 = cmc + mmwc + (dl_cyc + 1) * min_
 
         print("Metoda1 w cyklu: ", metoda1)
         print("Metoda2 w cyklu: ", metoda2, "\n")
@@ -152,7 +153,7 @@ if __name__ == "__main__":
     my_cycles = []
 
     licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()    
-    my_cycles = Creat_cycles_part2(Creat_cycles_part1, my_cycles)
+    my_cycles = creat_cycles_part2(creat_cycles_part1, my_cycles)
     # print(sumaC)        
     wyzn_para_cykl()
     oblicz_wyniku()
