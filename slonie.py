@@ -17,7 +17,7 @@ def import_date():
         for line in f:
             line = line.strip()
             line = re.sub("\s+", ", ", line.strip())
-            line =[int(x) for x in line.split(',')]
+            line = [int(x) for x in line.split(',')]
             lines.append(line)
         
     licz_sloni = int(lines[0][0])
@@ -36,9 +36,9 @@ def import_date():
     return licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph
     
 
-# DFS graph traversing
-def dfs_it(graph, start_node, end_node, p):
-    # print(p)
+# DFS graph traversing iterational
+def dfs_it(graph, start_node, end_node, cyc_with_repeti):
+    # print(cyc_with_repeti)
     frontier = []
     frontier.append(start_node)
     explored = set()  
@@ -46,37 +46,63 @@ def dfs_it(graph, start_node, end_node, p):
         current_node = frontier.pop()
         if current_node in explored: continue
         if current_node == end_node: 
-            if end_node not in p:
-                p.append(end_node) 
+            if end_node not in cyc_with_repeti:
+                cyc_with_repeti.append(end_node) 
                     
         for neighbor in graph[current_node]:
             frontier.append(neighbor)        
             explored.add(current_node) 
-    return p
+            
+    return cyc_with_repeti
 
 
 #
-def creat_cycles_part1(j):
-    p = []
-    for i in range(1, licz_sloni + 1):
-        # print(my_cycles)
-        # for j in range(1, licz_sloni + 1):
-        cycl = dfs_it(graph, j, i, p)
-        my_cycles.append(cycl)
+def creat_cycles_part1(start_node, my_cycles):
+    # cyc_with_repeti will contain all cycles with repetition
+    cyc_with_repeti = []
+    for end_node in range(1, licz_sloni + 1):
+        cycl = dfs_it(graph, start_node, end_node, cyc_with_repeti)
+        if cycl not in my_cycles:
+            my_cycles.append(cycl)
+            print(cycl)
+    print(cyc_with_repeti)
         
         
 #
-def creat_cycles_part2(Creat_cycles_part1, my_cycles):  
+def creat_cycles_part2(Creat_cycles_part1):
+    # list containing our cycles
+    my_cycles = []
+    # for amount of elephant
     for i in range(1, licz_sloni + 1):
-        Creat_cycles_part1(i)
-       
+        # return None
+        Creat_cycles_part1(i, my_cycles)     
+    # removes duplicates cycles in final list of cycles (my_cycles)
     my_cycles.sort()
     my_cycles = list(k for k,_ in itertools.groupby(my_cycles))
-    print("\nCycles: \n", my_cycles)
+    # print("\nCycles: \n", my_cycles)
     return my_cycles
 
 
-# wyznaczanie param cykli
+# distribution cycles into 2 element cycles for 
+# sum theire mass
+def rozklad_na_cykle_proste(my_cycles, masa_sloni):
+    print("my_cycles: ", my_cycles)
+    print("masa_sloni:", masa_sloni)
+    cykle_proste = []
+    for i, elem in enumerate(my_cycles, start = 1):
+        dl_cyc = len(elem)
+        print("i, elem: ", i, elem)
+        print("dl_cyc: ", dl_cyc, "\n")
+        for i in range(dl_cyc - 1):
+            cykle_proste.append([elem[i], elem[i + 1]])
+                    
+    print("cykle_proste: ", cykle_proste)
+    
+    return cykle_proste
+        
+
+
+# calculate cycles parameters
 def wyzn_para_cykl():
     calkowi_masa_cyklu = {}
     min_masa_w_cyklu = {}
@@ -115,7 +141,7 @@ def wyzn_para_cykl():
     return calkowi_masa_cyklu, min_masa_w_cyklu, min_
 
      
-# Obliczenie wyniku
+# count  finall reuslt
 def oblicz_wyniku():   
     calkowi_masa_cyklu, min_masa_w_cyklu, min_ = wyzn_para_cykl()
     w = []
@@ -146,17 +172,17 @@ def oblicz_wyniku():
     # 11200 
         
 
-# Programm start
+# algorithm  start
 if __name__ == "__main__":      
     start = time.time() # starting time
     
-    my_cycles = []
-
     licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()    
-    my_cycles = creat_cycles_part2(creat_cycles_part1, my_cycles)
+    my_cycles = creat_cycles_part2(creat_cycles_part1)
+    print("my_cycles", my_cycles)
+    # rozklad_na_cykle_proste(my_cycles, masa_sloni)
     # print(sumaC)        
-    wyzn_para_cykl()
-    oblicz_wyniku()
+    # wyzn_para_cykl()
+    # oblicz_wyniku()
        
     end = time.time() # end time   
     print(f"Runtime of the program is {end - start}") # total time taken
