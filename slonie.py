@@ -9,7 +9,6 @@ import re
 import itertools
 import time
 
-
 # importuje dane z plikow i zmienia ich format
 def import_date():
     lines = []  
@@ -21,7 +20,7 @@ def import_date():
             lines.append(line)
         
     licz_sloni = int(lines[0][0])
-    mas_slon = lines[1]
+    masa_sloni = lines[1]
     kol_startowa = lines[2]
     kol_docelowa = [[x] for x in lines[3]]
 
@@ -30,7 +29,7 @@ def import_date():
     # print(kol_startowa)
     # print(kol_docelowa)
 
-    masa_sloni = dict(zip(kol_startowa, mas_slon))
+    # masa_sloni = dict(zip(kol_startowa, mas_slon))
     graph = dict(zip(kol_startowa, kol_docelowa))
     
     return licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph
@@ -84,11 +83,13 @@ def wyzn_para_cykl():
         print(i, elem, "numer i cykl\n")
         sumaC, minC = 0, minn
         list_of_mass = []
-                 
-        # przechodzimy przez elementy cyklow
-        for e in elem:
-            # print(e, "n -ty slon\n")       
-            list_of_mass.append(masa_sloni.get(e))
+                    
+        [list_of_mass.append(masa_sloni[i-1]) for i in elem]
+
+        # # przechodzimy przez elementy cyklow
+        # for e in elem:
+        #     print(e, "n -ty slon\n")       
+        #     list_of_mass.append(masa_sloni[e-1])
                 
         sumaC = sum(list_of_mass)
         minC = min(list_of_mass)
@@ -114,7 +115,7 @@ def wyzn_para_cykl():
 def oblicz_wyniku():   
     calkowi_masa_cyklu, min_masa_w_cyklu, min_ = wyzn_para_cykl()
     w = []
-    for i, elem in enumerate(my_cycles, start = 1):        
+    for i, elem in enumerate(my_cycles, start = 1):   
         print("Numer cyklu: ", i)
         cmc = calkowi_masa_cyklu[i]
         mmwc = min_masa_w_cyklu[i]
@@ -136,20 +137,20 @@ def oblicz_wyniku():
     wynik = sum(w)
     
     print("Wynik: ", wynik)
-    # 30518 7038
+    # 30518 
     # 11200 
         
 
 # Programm start
 if __name__ == "__main__":      
     start = time.time() # starting time
-    
-    # my_cycles = []
 
     licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()    
+    
     my_cycles = get_cycles()
-    # print(sumaC)        
+
     wyzn_para_cykl()
+    
     oblicz_wyniku()
        
     end = time.time() # end time   
