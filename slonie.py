@@ -26,138 +26,115 @@ def import_date():
     kol_docelowa = [[x] for x in lines[3]]
 
     # print(licz_sloni)
-    # print(mas_slon)
-    # print(kol_startowa)
-    # print(kol_docelowa)
+    print(mas_slon)
+    # print("kol_startowa", kol_startowa)
+    # print("kol_docelowa", kol_docelowa)
 
-    masa_sloni = dict(zip(kol_startowa, mas_slon))
+    # masa_sloni = dict(zip(kol_startowa, mas_slon))
     graph = dict(zip(kol_startowa, kol_docelowa))
     
-    return licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph
+    return licz_sloni, mas_slon, kol_startowa, kol_docelowa, graph
     
 
 # DFS graph traversing iterational
-def dfs_it(graph, start_node, end_node, cyc_with_repeti):
-    # print(cyc_with_repeti)
-    frontier = []
-    frontier.append(start_node)
-    explored = set()  
-    while frontier:
-        current_node = frontier.pop()
-        if current_node in explored: continue
-        if current_node == end_node: 
-            if end_node not in cyc_with_repeti:
-                cyc_with_repeti.append(end_node) 
-                    
-        for neighbor in graph[current_node]:
-            frontier.append(neighbor)        
-            explored.add(current_node) 
-            
-    return cyc_with_repeti
+def dfs(graph, start_vertex):
+    visited = set()
+    traversal = []
+    stack = [start_vertex]
+    while stack:
+        vertex = stack.pop()
+        if vertex not in visited:
+            visited.add(vertex)
+            traversal.append(vertex)
+            stack.extend(reversed(graph[vertex]))   # add vertex in the same order as visited
+    return traversal
 
 
+def getList(graph):
+    list = []
+    for key in graph.keys():
+        list.append(key)
+          
+    return list
+      
+
 #
-def creat_cycles_part1(start_node, my_cycles):
-    # cyc_with_repeti will contain all cycles with repetition
-    cyc_with_repeti = []
-    for end_node in range(1, licz_sloni + 1):
-        cycl = dfs_it(graph, start_node, end_node, cyc_with_repeti)
-        if cycl not in my_cycles:
-            my_cycles.append(cycl)
-            print(cycl)
-    print(cyc_with_repeti)
-        
-        
-#
-def creat_cycles_part2(Creat_cycles_part1):
-    # list containing our cycles
+def get_cycles():
     my_cycles = []
-    # for amount of elephant
-    for i in range(1, licz_sloni + 1):
-        # return None
-        Creat_cycles_part1(i, my_cycles)     
-    # removes duplicates cycles in final list of cycles (my_cycles)
-    my_cycles.sort()
-    my_cycles = list(k for k,_ in itertools.groupby(my_cycles))
-    # print("\nCycles: \n", my_cycles)
+    xx = getList(graph)
+    for i, elem in enumerate(xx, start = 1):
+        x_flat = [val for sublist in my_cycles for val in sublist]
+        if elem not in x_flat:
+            my_cycles.append(dfs(graph, elem))    
+
+    # print(my_cycles)
     return my_cycles
+
 
 
 # distribution cycles into 2 element cycles for 
 # sum theire mass
 def rozklad_na_cykle_proste(my_cycles, masa_sloni):
-    print("my_cycles: ", my_cycles)
-    print("masa_sloni:", masa_sloni)
+    # print("my_cycles: ", my_cycles)
+    # print("masa_sloni:", masa_sloni)
     cykle_proste = []
     for i, elem in enumerate(my_cycles, start = 1):
         dl_cyc = len(elem)
-        print("i, elem: ", i, elem)
-        print("dl_cyc: ", dl_cyc, "\n")
+        # print("i, elem: ", i, elem)
+        # print("dl_cyc: ", dl_cyc, "\n")
         for i in range(dl_cyc - 1):
             cykle_proste.append([elem[i], elem[i + 1]])
                     
-    print("cykle_proste: ", cykle_proste)
+    print("cykle_proste: ", cykle_proste, "\n\n")
     
     return cykle_proste
         
 
 
 # calculate cycles parameters
-def wyzn_para_cykl():
-    calkowi_masa_cyklu = {}
-    min_masa_w_cyklu = {}
-    
-    minn = float('inf')
-    min_ = 0
-                
+def wyzn_para_cykl(cykle_proste, masa_sloni, kol_startowa):
+    print(masa_sloni, "masa_sloni\n")
+    mass_in_cycles = []
+    min_by_cycle = []
+    min_mass_global = 0
     # przechodzimy przez cykle w liscie
-    for i, elem in enumerate(my_cycles, start = 1):
-        print(i, elem, "numer i cykl\n")
-        sumaC, minC = 0, minn
-        list_of_mass = []
-                 
+    for i, elem in enumerate(cykle_proste, start = 1):
+        print("numer i cykl ", i, elem)
         # przechodzimy przez elementy cyklow
-        for e in elem:
-            # print(e, "n -ty slon\n")       
-            list_of_mass.append(masa_sloni.get(e))
-                
-        sumaC = sum(list_of_mass)
-        minC = min(list_of_mass)
-            
-        print(list_of_mass, "list_of_mass")
-        print("Min masa w cyklu: ",minC)
-        print("Suma mas cyklu: ", sumaC)       
-        calkowi_masa_cyklu[i] = sumaC
-        min_masa_w_cyklu[i] = minC
-
-        min_ = min(min_masa_w_cyklu, key=min_masa_w_cyklu.get)
-        min_ = min_masa_w_cyklu[min_]
+        x = masa_sloni[elem[0]-1]
+        y = masa_sloni[elem[1]-1]
+        mass_in_cycles.append(x + y)
+                       
+        min_mass_in_cycle = min(x, y)
+        min_by_cycle.append(min_mass_in_cycle)
         
-    print("\nMin masa globalnie: ", min_)   
-    print("Suma mas w cyklach:", calkowi_masa_cyklu)
-    print("Najlzejszy slon w cyklu:", min_masa_w_cyklu)
+        min_mass_global = min(min_by_cycle)
+                   
+    print("\nMin masa globalnie: ", min_mass_global)   
+    print("Suma mas w cyklach:", mass_in_cycles)
+    print("Najlzejszy slon w cyklu:", min_by_cycle)
     print("----------------------------------------------------\n")
         
-    return calkowi_masa_cyklu, min_masa_w_cyklu, min_
+    return mass_in_cycles, min_by_cycle, min_mass_global
 
      
 # count  finall reuslt
-def oblicz_wyniku():   
-    calkowi_masa_cyklu, min_masa_w_cyklu, min_ = wyzn_para_cykl()
+def oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste):   
+    
     w = []
-    for i, elem in enumerate(my_cycles, start = 1):        
+    for i, elem in enumerate(cykle_proste, start = 0):        
         print("Numer cyklu: ", i)
-        cmc = calkowi_masa_cyklu[i]
-        mmwc = min_masa_w_cyklu[i]
+        cmc = mass_in_cycles[i]
+        mmwc = min_by_cycle[i]
         dl_cyc = len(elem)
         
         print("Dlugos_cyckl: ", dl_cyc)
         print("Calk_masa_cykl: ", cmc)
         print("Min masa w cyklu: ", mmwc)
-        print("Globalne minimum: ", min_)  
+        print("Globalne minimum: ", min_mass_global)  
                 
         metoda1 = cmc + (dl_cyc  - 2) * mmwc
-        metoda2 = cmc + mmwc + (dl_cyc + 1) * min_
+        metoda2 = cmc + mmwc + (dl_cyc + 1) * min_mass_global
 
         print("Metoda1 w cyklu: ", metoda1)
         print("Metoda2 w cyklu: ", metoda2, "\n")
@@ -168,7 +145,7 @@ def oblicz_wyniku():
     wynik = sum(w)
     
     print("Wynik: ", wynik)
-    # 30518 7038
+    # 30518 
     # 11200 
         
 
@@ -176,13 +153,15 @@ def oblicz_wyniku():
 if __name__ == "__main__":      
     start = time.time() # starting time
     
-    licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()    
-    my_cycles = creat_cycles_part2(creat_cycles_part1)
-    print("my_cycles", my_cycles)
-    # rozklad_na_cykle_proste(my_cycles, masa_sloni)
-    # print(sumaC)        
-    # wyzn_para_cykl()
-    # oblicz_wyniku()
+    licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()   
+    
+    my_cycles = get_cycles()
+    print("my_cycles: ", my_cycles)
+    cykle_proste = rozklad_na_cykle_proste(my_cycles, masa_sloni)
+    
+    mass_in_cycles, min_by_cycle, min_mass_global = wyzn_para_cykl(cykle_proste, masa_sloni, kol_startowa)
+    
+    oblicz_wyniku(mass_in_cycles, min_by_cycle, min_mass_global, cykle_proste)
        
     end = time.time() # end time   
     print(f"Runtime of the program is {end - start}") # total time taken
