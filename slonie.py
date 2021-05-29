@@ -6,7 +6,6 @@ Created on Sat May 22 00:48:15 2021
 @author: lukas
 """
 import re 
-# import itertools
 import time
 
 # import data and adjust tham
@@ -144,13 +143,13 @@ def counting_result():
 
 # algorithm  start
 if __name__ == "__main__":      
-    start = time.time() # starting time
+    # start = time.time() # starting time
     # provides imput date
     licz_sloni, masa_sloni, kol_startowa, kol_docelowa, graph = import_date()    
     # final calculation
     counting_result()
        
-    end = time.time() # end time   
-    print(f"Runtime of the program is {end - start}") # total time taken
+    # end = time.time() # end time   
+    # print(f"Runtime of the program is {end - start}") # total time taken
 
                                                 
