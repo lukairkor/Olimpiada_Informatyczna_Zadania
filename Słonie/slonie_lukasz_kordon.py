@@ -10,10 +10,10 @@ import time
 
 # import data and adjust tham
 def import_date():
-    file_ = input()
+    # file_ = input()
     lines = []  
-    # with open('zadanie_B/slo1.in', 'r') as f:
-    with open(str(file_), 'r') as f:
+    with open('zadanie_B/slo5.in', 'r') as f:
+    # with open(str(file_), 'r') as f:
         for line in f:
             line = line.strip()
             line = re.sub("\s+", ", ", line.strip())
